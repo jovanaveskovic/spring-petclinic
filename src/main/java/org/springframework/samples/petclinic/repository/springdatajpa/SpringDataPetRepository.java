@@ -30,6 +30,7 @@ import org.springframework.samples.petclinic.repository.PetRepository;
  * @author Michael Isvy
  * @since 15.1.2013
  */
+@org.springframework.stereotype.Repository
 public interface SpringDataPetRepository extends PetRepository, Repository<Pet, Integer> {
 
     @Override

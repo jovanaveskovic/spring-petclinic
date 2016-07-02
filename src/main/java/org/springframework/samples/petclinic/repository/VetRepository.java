@@ -18,6 +18,8 @@ package org.springframework.samples.petclinic.repository;
 import java.util.Collection;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.model.Vet;
 
 /**
@@ -37,6 +39,11 @@ public interface VetRepository {
      * @return a <code>Collection</code> of <code>Vet</code>s
      */
     Collection<Vet> findAll() throws DataAccessException;
-
-
+    
+    /**
+     * Retrieve all <code>Vet</code>s on the specified page.
+     *
+     * @return a <code>Page</code> with <code>Vet</code>s
+     */
+	Page<Vet> findAll(Pageable pageable) throws DataAccessException;
 }

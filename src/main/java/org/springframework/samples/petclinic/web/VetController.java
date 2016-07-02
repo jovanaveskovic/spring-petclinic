@@ -18,6 +18,9 @@ package org.springframework.samples.petclinic.web;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Vets;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.stereotype.Controller;
@@ -33,34 +36,38 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class VetController {
 
-    private final ClinicService clinicService;
+	private final ClinicService clinicService;
 
+	@Autowired
+	public VetController(ClinicService clinicService) {
+		this.clinicService = clinicService;
+	}
 
-    @Autowired
-    public VetController(ClinicService clinicService) {
-        this.clinicService = clinicService;
-    }
+	@RequestMapping("/vets.xml")
+	public String showVetList(Map<String, Object> model) {
+		// Here we are returning an object of type 'Vets' rather than a
+		// collection of Vet objects
+		// so it is simpler for Object-Xml mapping
+		Vets vets = new Vets();
+		vets.getVetList().addAll(this.clinicService.findVets());
+		model.put("vets", vets);
+		return "vets/vetList";
+	}
 
-    @RequestMapping(value = {"/vets.xml", "/vets.html"})
-    public String showVetList(Map<String, Object> model) {
-        // Here we are returning an object of type 'Vets' rather than a collection of Vet objects
-        // so it is simpler for Object-Xml mapping
-        Vets vets = new Vets();
-        vets.getVetList().addAll(this.clinicService.findVets());
-        model.put("vets", vets);
-        return "vets/vetList";
-    }
+	@RequestMapping("/vets.json")
+	public @ResponseBody Vets showResourcesVetList() {
+		// Here we are returning an object of type 'Vets' rather than a
+		// collection of Vet objects
+		// so it is simpler for JSon/Object mapping
+		Vets vets = new Vets();
+		vets.getVetList().addAll(this.clinicService.findVets());
+		return vets;
+	}
 
-    @RequestMapping("/vets.json")
-    public
-    @ResponseBody
-    Vets showResourcesVetList() {
-        // Here we are returning an object of type 'Vets' rather than a collection of Vet objects
-        // so it is simpler for JSon/Object mapping
-        Vets vets = new Vets();
-        vets.getVetList().addAll(this.clinicService.findVets());
-        return vets;
-    }
-
-
+	@RequestMapping(value = "/vets.html")
+	public String showVetPage(Pageable page, Map<String, Object> model) {
+		Page<Vet> vets = this.clinicService.findAll(page);
+		model.put("vets", vets);
+		return "vets/vetList";
+	}
 }

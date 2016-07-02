@@ -21,6 +21,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.repository.VetRepository;
 import org.springframework.stereotype.Repository;
@@ -47,5 +50,10 @@ public class JpaVetRepositoryImpl implements VetRepository {
     public Collection<Vet> findAll() {
         return this.em.createQuery("SELECT distinct vet FROM Vet vet left join fetch vet.specialties ORDER BY vet.lastName, vet.firstName").getResultList();
     }
+
+	@Override
+	public Page<Vet> findAll(Pageable pageable) throws DataAccessException {
+		throw new RuntimeException("Will be available soon..");
+	}
 
 }

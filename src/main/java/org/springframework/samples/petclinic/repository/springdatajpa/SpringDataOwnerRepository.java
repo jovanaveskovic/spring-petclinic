@@ -29,6 +29,7 @@ import org.springframework.samples.petclinic.repository.OwnerRepository;
  * @author Michael Isvy
  * @since 15.1.2013
  */
+@org.springframework.stereotype.Repository
 public interface SpringDataOwnerRepository extends OwnerRepository, Repository<Owner, Integer> {
 
     @Override

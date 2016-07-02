@@ -3,10 +3,13 @@ package org.springframework.samples.petclinic.web;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Locale;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,6 +18,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 /**
  * Test class for the {@link VetController}
@@ -32,7 +38,14 @@ public class VetControllerTests {
 
     @Before
     public void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(vetController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(vetController).setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+        .setViewResolvers(new ViewResolver() {
+            @Override
+            public View resolveViewName(String viewName, Locale locale) throws Exception {
+                return new MappingJackson2JsonView();
+            }
+        })
+        .build();
     }
 
     @Test
